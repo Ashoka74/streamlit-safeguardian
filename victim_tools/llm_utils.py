@@ -55,11 +55,6 @@ class GeminiConfig:
         ]
 
 
-# def tool_config_from_mode(mode: str, fns: Iterable[str] = ()):
-#     """Create a tool config with the specified function calling mode."""
-#     return content_types.to_tool_config(
-#         {"function_calling_config": {"mode": mode, "allowed_function_names": fns}}
-#     )
 
 
 victim_info_schema = genai.protos.Schema(
