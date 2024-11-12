@@ -8,8 +8,11 @@ from victim_tools.llm_utils import schema
 
 dotenv.load_dotenv()
 
-gemini_api = os.getenv("gemini_api")
-
+try:
+    gemini_api = os.getenv("gemini_api")
+except Exception as e:
+    print(f"No .env file, looking at secrets.toml")
+    gemini_api = st.secrets["gemini_api"]
 
 def update_victim_json(new_infos: Optional[Dict[str, Any]]):
     json_template = st.session_state.get('json_template', {})

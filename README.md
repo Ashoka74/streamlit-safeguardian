@@ -1,12 +1,16 @@
 <div align="center">
-  <img src="https://github.com/Latticeworks1/safeguardianAI/blob/c00a9b4a0ad56c2fb4b5bfb8138ff2b226a14fce/sglogo.png" alt="SafeGuardianAI Logo" width="200"/>
+
+  <img src="https://github.com/user-attachments/assets/02d63c35-98fb-4537-82df-8d373d0d47f1" width="200px" />
 
   <h1 style="border-bottom: none;">SafeGuardianAI</h1>
 
   <p><em>Decentralized AI-Driven Disaster Response Assistant</em></p>
 
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"/></a>
+  <a href="https://opensource.org/licenses/gpl-3-0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL 3.0"/></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="Python 3.8+"/></a>
+  <a href="https://huggingface.co/organizations/SafeGuardianAI/share/kenFDVCMqdyHJYwsMwxWivXcwFqXBAAsHr">
+<img alt="Spaces" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue">
+</a>
   <a href="https://safeguardian-llm.streamlit.app/"><img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Streamlit App"/></a>
 </div>
 
@@ -14,9 +18,11 @@
 
 <p><b>SafeGuardianAI</b> is an innovative emergency response platform that harnesses the power of artificial intelligence to provide critical support during catastrophic events. By seamlessly integrating real-time data analysis, offline capabilities, and community-driven support, SafeGuardianAI bridges the gap between individuals, communities, and emergency services, ensuring a more coordinated and effective response to disasters.</p>
 
-<h2>🚀 Key Features</h2>
+https://github.com/user-attachments/assets/e40dd7bf-9a91-4acd-9985-7910789c3e91
 
-<ul>
+
+<h2>🚀 Key Features</h2><ul>
+  
   <li>💬 <strong>AI-Powered Chat Interface</strong>: Interact with GuardianAI for personalized emergency assistance and real-time guidance.</li>
   <li>🎙️ <strong>Multi-Modal Activation</strong>: Trigger emergency mode via text, voice commands, or automatic motion detection for hands-free operation.</li>
   <li>👤 <strong>Smart User Profiles</strong>: Store vital information securely for quick access during emergencies, including medical history and emergency contacts.</li>
@@ -33,7 +39,7 @@
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/1ed3b76c-66e1-42eb-9f30-ee64bce13358" alt="UI Screenshot" width="45%" style="margin-right: 10px;"/>
-  <img src="https://github.com/user-attachments/assets/e8476376-a64f-4b68-8367-26d671813817" alt="Map View" width="45%"/>
+
   <img src="https://github.com/user-attachments/assets/0c3988f3-a136-42b3-814b-117689352dd3" alt="Priority Mapping" width="45%"/>
   <img src="https://github.com/user-attachments/assets/7cd4525a-abd0-477e-9d83-2ea729635bb9" alt="Optimized Path" width="45%"/>
 
@@ -56,26 +62,32 @@
 <h2>🚀 Quick Start</h2>
 
 <h3>
+
   
-[Live Demo](https://safeguardian-llm.streamlit.app/)
+
+
+
+[Live Demo]([https://safeguardian-llm.streamlit.app/](https://github.com/Ashoka74/SafeGuardian-LLM.git))
   
 </h3>
 
 <ol>
   <li>Clone the repository:
-    <pre><code>git clone https://github.com/your-repo/SafeGuardianAI.git
-cd SafeGuardianAI</code></pre>
+    <pre><code>git clone https://github.com/Ashoka74/SafeGuardian-LLM.git
+cd SafeGuardian-LLM</code></pre>
   </li>
   <li>Install dependencies:
     <pre><code>pip install -r requirements.txt</code></pre>
   </li>
   <li>Set up environment variables:
     Create a <code>.env</code> file in the project root with the following content:
-    <pre><code>GEMINI_API_KEY=your_gemini_api_key_here
-ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
-GEOLOCATOR_API_KEY=your_geolocator_api_key_here
-FIREBASE_CONFIG=your_firebase_config_json_here</code></pre>
+    <pre><code>
+     gemini_api = '<YOUR_KEY>'
+     elevenlabs_api = '<YOUR_KEY>'
+</code></pre>
   </li>
+  
+ 
   <li>Run the application:
     <pre><code>streamlit run app.py</code></pre>
   </li>
@@ -191,7 +203,7 @@ FIREBASE_CONFIG=your_firebase_config_json_here</code></pre>
 
 <h2>📄 License</h2>
 
-<p>This project is licensed under the MIT License - see the <a href="LICENSE.md">LICENSE.md</a> file for details.</p>
+<p>This project is licensed under the GNU General Public License- see the <a href="LICENSE.md">LICENSE.md</a> file for details.</p>
 
 <h2>🙏 Acknowledgments</h2>
 
@@ -206,5 +218,3 @@ FIREBASE_CONFIG=your_firebase_config_json_here</code></pre>
 <div align="center">
   <p>Made with ❤️ by the SafeGuardianAI Team</p>
 </div>
-=======
-# SafeGuardian-LLM-private

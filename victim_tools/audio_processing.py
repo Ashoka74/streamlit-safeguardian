@@ -49,7 +49,12 @@ def process_audio(audio):
 def text_to_speech_elevenlabs(text):
     text = ''.join(text)
     url = f"https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM"
-    elevenlab_api = os.getenv('elevenlabs_api')
+    try:
+        elevenlab_api = os.getenv('elevenlabs_api')
+    except Exception as e:
+        print(f"No .env file, looking at secrets.toml")
+        elevenlab_api = st.secrets["elevenlabs_api"]
+
     headers = {
     "accept": "audio/mpeg",
     "xi-api-key": elevenlab_api,

@@ -27,7 +27,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Configuration
-gemini_api = os.getenv("gemini_api")
+try:
+    gemini_api = os.getenv("gemini_api")
+except Exception as e:
+    print(f"No .env file, looking at secrets.toml")
+    gemini_api = st.secrets["gemini_api"]
 
 os.environ['GOOGLE_API_KEY'] = gemini_api
 
