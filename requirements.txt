@@ -367,6 +367,7 @@ pycparser==2.22
 pydeck==0.9.1
     # via streamlit
 pydub==0.25.1
+pymongo
     # via streamlit-audiorecorder
 pygments==2.18.0
     # via

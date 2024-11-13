@@ -19,8 +19,11 @@ class RescueAPIMongo:
             self.json_template = json.load(f)
 
         # Set up database and collection
-        self.db = self.client['disaster_rescue']
-        self.collection = self.db['rescue_team_dataset']
+        #self.db = self.client['disaster_rescue']
+        #self.collection = self.db['rescue_team_dataset']
+
+        self.db = self.client['Cluster0']
+        self.collection = self.db['disaster_rescue.rescue_team_dataset']
 
         # Initialize FastAPI
         self.app = FastAPI()

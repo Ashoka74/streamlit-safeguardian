@@ -31,6 +31,13 @@ from rescue_api import RescueAPI
 
 rescue_api = RescueAPI()
 
+# Add these constants near the top of the file after imports
+SF_COORDINATES = {
+    "latitude": 37.7749,
+    "longitude": -122.4194,
+    "zoom": 10
+}
+
 def responses_to_df(data,col):
     data = pd.DataFrame.from_records(data).T
     if col is not None:
@@ -426,7 +433,7 @@ with open("synthethic_data_victims.json", "r") as file:
     synth_data = json.load(file)
 
 
-if st.toggle('synth_dataset'):
+if st.toggle('synth_dataset', value=True):
     data_df = pd.DataFrame.from_records(synth_data)
     victim_info = data_df.victim_info.to_list()
     my_dataset = pd.json_normalize(victim_info)
@@ -497,6 +504,15 @@ if my_dataset is not None :
     # Load the base config
     with open('configs/rescue_conf.kgl', 'r') as f:
         base_config = json.load(f)
+        # Set initial map view to San Francisco
+        base_config['config']['mapState'] = {
+            "bearing": 0,
+            "latitude": SF_COORDINATES["latitude"],
+            "longitude": SF_COORDINATES["longitude"],
+            "pitch": 0,
+            "zoom": SF_COORDINATES["zoom"],
+            "dragRotate": False
+        }
 
     with open('configs/victims_config.kgl', 'r') as f:
         victims_config = json.load(f)
@@ -565,5 +581,5 @@ if my_dataset is not None :
 
     map_1.config = base_config
     
-    keplergl_static(map_1, center_map=True)
+    keplergl_static(map_1, center_map=False)
     st.session_state['map_generated'] = True
