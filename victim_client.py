@@ -71,6 +71,9 @@ if "json_template" not in st.session_state:
 if "victim_info" not in st.session_state:
     st.session_state.victim_info = json_template
 
+# mongoDB 
+if "mongo_db" not in st.session_state:
+    st.session_state['mongo_db'] = None
 
 # Function calling definitions
 function_calling = {
@@ -111,7 +114,6 @@ def main():
         rescue = RescueAPI()
     elif mode == "MongoDB":
         rescue = RescueAPIMongo()
-
     if "victim_number" not in st.session_state:
         #st.session_state['victim_number'] = set_key(st.session_state['victim_info'])
     # rescue = RescueAPI()
