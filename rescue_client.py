@@ -425,6 +425,7 @@ def color_risk(val):
 with open("synthethic_data_victims.json", "r") as file:
     synth_data = json.load(file)
 
+
 if st.toggle('synth_dataset'):
     data_df = pd.DataFrame.from_records(synth_data)
     victim_info = data_df.victim_info.to_list()

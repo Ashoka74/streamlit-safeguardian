@@ -39,6 +39,8 @@ def parse_json_safely(json_str: str) -> Dict[str, Any]:
     """
     Attempt to parse JSON string, handling common issues.
     """
+
+    print(json_str)
     try:
         return json.loads(json_str)
     except json.JSONDecodeError as e:

@@ -9,6 +9,7 @@ from victim_tools.function_calling import provide_user_location
 from victim_tools.state_manager import StateManager
 from rescue_tools.fetch_vital_data import json_template #set_key, update_, 
 from rescue_api import RescueAPI
+from rescue_api_mongo import RescueAPIMongo
 import io
 import base64
 import json
@@ -69,10 +70,6 @@ if "json_template" not in st.session_state:
 # Updated JSON Schema
 if "victim_info" not in st.session_state:
     st.session_state.victim_info = json_template
-if "victim_number" not in st.session_state:
-    #st.session_state['victim_number'] = set_key(st.session_state['victim_info'])
-    rescue = RescueAPI()
-    st.session_state['victim_number'] = rescue.post_victim(st.session_state['victim_info'])
 
 
 # Function calling definitions
@@ -107,12 +104,27 @@ def main():
     # create 3 columns
     left, middle, right = st.columns([.5, .1, .4])
     # Chat input and display
+
+    mode = st.radio("Select a DB Provider", ["FireBase", "MongoDB"], index=1)
+
+    if mode == "FireBase":
+        rescue = RescueAPI()
+    elif mode == "MongoDB":
+        rescue = RescueAPIMongo()
+
+    if "victim_number" not in st.session_state:
+        #st.session_state['victim_number'] = set_key(st.session_state['victim_info'])
+    # rescue = RescueAPI()
+        st.session_state['victim_number'] = rescue.post_victim(st.session_state['victim_info'])
+
+
+
     with left:
         chat_container(height=820)
         
     # Victim information display
     with right:
-        display_victim_info()
+        display_victim_info(rescue)
 
 # create chat container
 def chat_container(height: int):
@@ -138,11 +150,10 @@ def chat_container(height: int):
         state_manager.display_messages()
 
 
-def display_victim_info():
+def display_victim_info(rescue):
     st.write("Victim Info:\n\n", st.session_state.victim_info)
     # send data to FireBase
     try:
-        rescue = RescueAPI()
         rescue.update_victim(st.session_state['victim_number'], st.session_state['victim_info'])
         #update_(st.session_state['victim_number'], st.session_state['victim_info'])
         time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

@@ -17,7 +17,7 @@ from streamlit_extras.stateful_button import button as stateful_button
 from streamlit_keplergl import keplergl_static
 from keplergl import KeplerGl
 
-from rescue_tools import path_optimizer
+from rescue_tools import path_optimizer, cuopt_path_opt
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
@@ -513,28 +513,94 @@ if my_dataset is not None :
     
     if st.toggle('Show Optimized Paths'):
         # Get the coordinates of the rescue centers
-
-        # # Plan the rescue route
-        # weighted_route = path_optimizer.get_osrm_trip(
-        #     coordinates=synth_data[['longitude', 'latitude']].values.tolist(),
-        #     weights=synth_data['risk_nb'].apply(path_optimizer.emergency_to_weight).tolist(),
-        #     rescue_center=rescue_centers[0]
-        # )
-
-        # # Add the weighted route to the map
-        # map_1.add_data(weighted_route, name='weighted_route')
-
         rescue_centers = rescue[['longitude', 'latitude']].values.tolist()[0]
 
-        # Plan the unweighted route
-        unweighted_route = path_optimizer.get_osrm_trip(
-            coordinates=synth_data[['longitude', 'latitude']].values.tolist(),
-            weights=None,
-            rescue_center=rescue_centers
-        )
-        # Add the unweighted route to the map
-        map_1.add_data(unweighted_route, name='optimal_path')
-        base_config['config']['visState']['layers'].extend([layer for layer in itinerary_config['config']['visState']['layers']])
+        if st.toggle('Show Optimized Paths', False):
+            rescue_centers = rescue[['longitude', 'latitude']].values.tolist()[0]
+            rescue_name = st.selectbox('Select Rescue Center', rescue['name'].values.tolist())
+            rescue_centers_coordinates = rescue[rescue['name'] == rescue_name][['longitude', 'latitude']].values.tolist()[0]
+
+            # radio button to choose between CuOpt and OSRM
+            path_choice = st.radio('Choose Path Planning Method', ['OSRM', 'CuOpt'], index=0)
+
+            if path_choice == 'CuOpt':
+            # Advanced options (collapsible)
+                with st.expander("Advanced Options"):
+                    st.subheader("CuOpt Parameters")
+                    num_vehicles = st.slider("Number of Vehicles", min_value=1, max_value=10, value=2)
+                    vehicle_capacity = st.number_input("Vehicle Capacity", min_value=1, value=4)
+                    time_limit = st.slider("Time Limit (hours)", min_value=1, max_value=24, value=10)
+                    
+                    starting_point = st.selectbox('Select Starting Point', rescue['name'].values.tolist())
+                    starting_point_coordinates = rescue[rescue['name'] == starting_point][['longitude', 'latitude']].values.tolist()[0]
+                    ending_point = st.selectbox('Select Ending Point', rescue['name'].values.tolist())
+                    ending_point_coordinates = rescue[rescue['name'] == ending_point][['longitude', 'latitude']].values.tolist()[0]
+                    # Objectives
+                    st.subheader("Optimization Objectives")
+                    cost_weight = st.slider("Cost Weight", min_value=0.0, max_value=1.0, value=1.0, step=0.1)
+                    travel_time_weight = st.slider("Travel Time Weight", min_value=0.0, max_value=1.0, value=0.0, step=0.1)
+                    route_size_variance_weight = st.slider("Route Size Variance Weight", min_value=0.0, max_value=1.0, value=0.0, step=0.1)
+                    min_vehicles = st.number_input("Minimum Vehicles", min_value=1, value=1)
+                    max_cost = st.number_input("Maximum Cost per Vehicle", min_value=0, value=10)
+                    max_time = st.number_input("Maximum Time per Vehicle (hours)", min_value=0, value=10)
+                    fixed_cost = st.number_input("Fixed Cost per Vehicle", min_value=0, value=5)
+        
+                coordinates = coordinates.values.tolist()
+                coordinates = [starting_point_coordinates] + coordinates + [ending_point_coordinates]
+
+                # Generate cuOpt configuration
+                cuopt_json = cuopt_path_opt.generate_cuopt_config(
+                    coordinates=coordinates,
+                    cost_matrix=cuopt_path_opt.create_cost_matrix(coordinates), 
+                    num_vehicles=num_vehicles,
+                    vehicle_capacity=vehicle_capacity,
+                    time_limit=time_limit,
+                    starting_point_coordinates=starting_point_coordinates,
+                    ending_point_coordinates=ending_point_coordinates,
+                    cost_weight=cost_weight,
+                    travel_time_weight=travel_time_weight,
+                    route_size_variance_weight=route_size_variance_weight,
+                    min_vehicles=min_vehicles,
+                    max_cost=max_cost,
+                    max_time=max_time,
+                    fixed_cost=fixed_cost
+                )
+
+                # # print all except cost_matrix
+                # for key, value in cuopt_config.items():
+                #     if key != 'travel_time_matrix_data':
+                #         st.write(f"{key}: {value}")
+                #     elif key == 'data':
+                #         for k, v in value.items():
+                #             if k != 'cost_matrix_data':
+                #                 st.write(f"{k}: {v}")
+
+                # Send request to cuOpt API (example endpoint)
+                cuopt_api_url = "http://localhost:5000/cuopt/cuopt"
+                response = requests.post(cuopt_api_url, json=cuopt_json)
+
+                # Handle response
+                if response.status_code == 200:
+                    st.success("CuOpt request successful")
+                    result = response.json()     
+                    # Convert to geojson
+                    cuopt_route = cuopt_path_opt.create_geojson_from_cuopt_and_osrm(result, coordinates)
+                    # Add the CuOpt route to the map
+                    map_1.add_data(cuopt_route, name='cuopt_route')
+                    base_config['config']['visState']['layers'].extend([layer for layer in cuopt_config['config']['visState']['layers']])
+                else:
+                    st.error(f"Error: API request failed with status code {response.status_code}")
+
+        else:
+            # Plan the unweighted route
+            unweighted_route = path_optimizer.get_osrm_trip(
+                coordinates=synth_data[['longitude', 'latitude']].values.tolist(),
+                weights=None,
+                rescue_center=rescue_centers
+            )
+            # Add the unweighted route to the map
+            map_1.add_data(unweighted_route, name='optimal_path')
+            base_config['config']['visState']['layers'].extend([layer for layer in itinerary_config['config']['visState']['layers']])
 
 
     
