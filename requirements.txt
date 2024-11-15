@@ -304,6 +304,7 @@ numpy==2.1.1
     #   shapely
     #   streamlit
 onnxruntime==1.19.2
+openai
     # via faster-whisper
 overrides==7.7.0
     # via jupyter-server

@@ -77,8 +77,8 @@ if "mongo_db" not in st.session_state:
 
 # Function calling definitions
 function_calling = {
-    'get_rescue_data': get_rescue_data,
-    'get_location': provide_user_location,
+    # 'get_rescue_data': get_rescue_data,
+    # 'get_location': provide_user_location,
     #'get_location_from_wifi': get_location_from_wifi
     # Add more functions here!
 }
