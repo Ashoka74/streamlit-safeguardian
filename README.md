@@ -51,7 +51,7 @@ https://github.com/user-attachments/assets/e40dd7bf-9a91-4acd-9985-7910789c3e91
 <ul>
   <li><strong>Frontend</strong>: Streamlit - for rapid development of interactive web applications</li>
   <li><strong>Backend</strong>: Python - leveraging its rich ecosystem of data science and AI libraries</li>
-  <li><strong>Database</strong>: Firebase Realtime Database - for real-time data synchronization and offline support</li>
+  <li><strong>Database</strong>: MongoDB Realtime Database - for real-time data synchronization and offline support</li>
   <li><strong>AI/ML</strong>: Google's Generative AI (Gemini) - powering intelligent conversations and decision-making</li>
   <li><strong>Geolocation</strong>: Custom WiFi & IP-based tracking - for accurate location services even in challenging environments</li>
   <li><strong>Text-to-Speech</strong>: ElevenLabs API - providing natural-sounding voice interactions</li>
