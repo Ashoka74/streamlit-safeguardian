@@ -1,0 +1,12 @@
+version: 1.0
+runtime: python3
+build:
+  runtime-version: 3.11
+  commands:
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+run:
+  command: streamlit run app.py --server.port 8080 --server.address 0.0.0.0
+  runtime-version: 3.11
+  network:
+    port: 8080
