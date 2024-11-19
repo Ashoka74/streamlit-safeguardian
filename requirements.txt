@@ -125,6 +125,7 @@ matplotlib
 seaborn
 stqdm
 streamlit-extras
+fastapi
 google-auth==2.35.0
     # via
     #   google-api-core
