@@ -6,6 +6,10 @@
 
   <p><em>Decentralized AI-Driven Disaster Response Assistant</em></p>
 
+  <a href="https://www.superagentai.com/hackathon-results">
+    <img src="https://img.shields.io/badge/1st%20Prize%20at%20SuperAgentAI%20Hackathon%20-%20Stanford%20ResearchPark-yellow" alt="1st Prize at SuperAgentAI Hackathon" />
+  </a>
+
   <a href="https://opensource.org/licenses/gpl-3-0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL 3.0"/></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="Python 3.8+"/></a>
   <a href="https://huggingface.co/organizations/SafeGuardianAI/share/kenFDVCMqdyHJYwsMwxWivXcwFqXBAAsHr">
