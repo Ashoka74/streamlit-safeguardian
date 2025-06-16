@@ -191,6 +191,228 @@ cd SafeGuardian-LLM</code></pre>
   </li>
 </ol>
 
+
+# Technical Diagram
+
+
+```mermaid
+sequenceDiagram
+    participant U as User (Victim)
+    participant D as Device (Smartphone)
+    participant P as Permission Manager
+    participant DS as Device Sensors
+    participant LLM as On-Device LLM
+    participant STT as Speech Engine
+    participant M as Mesh Network
+    participant S as Satellite Service
+    participant C as Cloud (Firebase)
+    participant CM as Cloud Model (Gemini/GPT)
+    participant R as Rescue Teams
+    participant N as Nearby Helpers
+
+    Note over U,D: Earthquake Detected
+    
+    D->>D: Seismic activity detected
+    D->>P: Request emergency permissions
+    P->>U: "Grant emergency access?"
+    Note over P,U: Location, Microphone,<br/>Sensors, Network, Storage
+    U->>P: Grant all permissions
+    
+    P->>DS: Gather device capabilities
+    DS-->>D: Location, Altitude, Battery
+    DS-->>D: Accelerometer (AoA calc)
+    DS-->>D: Network status, WiFi Direct, BLE
+    DS-->>D: RAM, CPU, OS version
+    DS-->>D: Available storage
+    
+    D->>D: Assess capabilities
+    alt High-end device (RAM > 8GB, Fast CPU)
+        D->>D: Load Qwen3-3B / Gemma-2B
+        Note over D: >7 tokens/sec capable
+        D->>STT: Initialize Whisper.cpp
+    else Mid-range device
+        D->>D: Load Phi-3.5 (3B)
+        D->>STT: Use native Android/iOS STT
+    else Low-end device
+        D->>D: Queue for cloud processing
+    end
+
+    alt Cloud Available (Preferred for complex cases)
+        U->>D: Voice input
+        D->>CM: Stream to Gemini 2.0 Flash
+        Note over CM: Native audio thinking<br/>Real-time processing
+        CM->>D: Structured response + guidance
+        D->>C: Store interaction
+    else Local Processing Only
+        U->>STT: Voice input
+        STT->>LLM: Transcribed text
+        LLM->>LLM: Process with llguidance
+        Note over LLM: Structured generation<br/>JSON schema enforcement
+        LLM->>U: Typed response + guidance
+    end
+    
+    LLM->>D: Generate emergency packet
+    Note over D: SOTA compression<br/>MessagePack/CBOR<br/>~90% size reduction
+    
+    D->>D: Priority queue by severity
+    Note over D: Critical: <1KB packets<br/>Location + vitals only
+    
+    par Multi-path transmission attempts
+        D->>M: BLE/WiFi mesh broadcast
+        and
+        D->>S: Satellite (if visible)
+        and
+        D->>C: Any available network
+    end
+    
+    alt Mesh path succeeds
+        M->>N: Relay packets
+        N->>C: Forward to cloud
+        C->>R: Push to rescue dashboard
+        R->>C: Acknowledge receipt
+        C->>M: Send pre-cached response
+        M->>D: "Help acknowledged ETA: 45min"
+        D->>U: Display confirmation
+    else Direct cloud path
+        C->>R: Real-time update
+        R->>C: Mark handled + ETA
+        C->>D: Cached response packet
+        D->>U: "Rescue team notified"
+    else All paths fail
+        D->>D: Store with timestamp
+        LLM->>U: "Data saved. Keep trying..."
+        loop Retry every 30 seconds
+            D->>D: Check connectivity
+            D->>M: Attempt transmission
+        end
+    end
+    
+    loop Continuous monitoring
+        DS->>D: Battery: {level}%
+        DS->>D: Movement detected
+        alt Battery < 20%
+            D->>D: Switch to power save
+            Note over D: Reduce model size<br/>Increase cache use
+        end
+        alt Status change detected
+            U->>LLM: Update condition
+            LLM->>D: Recompute priority
+            D->>C: Send delta update only
+        end
+    end
+    
+    Note over R: Rescue approaching
+    R->>C: "Team 500m away"
+    C->>D: Priority push notification
+    D->>U: "Rescue 5 min away"
+    D->>D: Activate beacon mode
+    Note over D: Max volume audio<br/>Flash light pattern<br/>Vibration sequence
+```
+
+
+```mermaid
+graph TB
+    subgraph "Layer 5: Emergency Services Integration"
+        ES[Emergency Services Dashboard]
+        CUOPT[NVIDIA CuOpt Route Optimization]
+        TRIAGE[AI Triage System]
+    end
+    
+    subgraph "Layer 4: Cloud Infrastructure"
+        CLOUD[Firebase Cloud Services]
+        API[API Gateway]
+        SYNC[Data Synchronization]
+        ANALYTICS[Analytics Engine]
+    end
+    
+    subgraph "Layer 3: Gateway & Relay Systems"
+        GATEWAY1[Mesh Gateway Nodes]
+        GATEWAY2[Satellite Ground Stations]
+        GATEWAY3[Cellular Edge Servers]
+        RELAY[Community Relay Points]
+    end
+    
+    subgraph "Layer 2: Network Transport"
+        MESH[Bluetooth/WiFi Mesh Network]
+        SAT[Satellite Communication]
+        CELL[Cellular Network]
+        LORA[LoRa Long Range]
+    end
+    
+    subgraph "Layer 1: Device Layer"
+        DEVICE1[Victim Device]
+        DEVICE2[Helper Device]
+        DEVICE3[Responder Device]
+        LLM1[On-Device LLM]
+        LLM2[On-Device LLM]
+        LLM3[On-Device LLM]
+    end
+    
+    %% Device connections
+    DEVICE1 -.->|No Network| LLM1
+    DEVICE2 -.->|No Network| LLM2
+    DEVICE3 -.->|No Network| LLM3
+    
+    %% Layer 1 to Layer 2 connections
+    DEVICE1 -->|BT/WiFi| MESH
+    DEVICE1 -->|If Available| SAT
+    DEVICE1 -->|If Available| CELL
+    DEVICE1 -->|If Available| LORA
+    
+    DEVICE2 -->|BT/WiFi| MESH
+    DEVICE2 -->|Primary| CELL
+    
+    DEVICE3 -->|All Channels| MESH
+    DEVICE3 -->|All Channels| SAT
+    DEVICE3 -->|All Channels| CELL
+    DEVICE3 -->|All Channels| LORA
+    
+    %% Mesh network interconnections
+    MESH <-->|Multi-hop| MESH
+    
+    %% Layer 2 to Layer 3 connections
+    MESH --> GATEWAY1
+    SAT --> GATEWAY2
+    CELL --> GATEWAY3
+    LORA --> RELAY
+    
+    GATEWAY1 <--> RELAY
+    RELAY <--> GATEWAY3
+    
+    %% Layer 3 to Layer 4 connections
+    GATEWAY1 --> API
+    GATEWAY2 --> API
+    GATEWAY3 --> API
+    RELAY --> SYNC
+    
+    API --> CLOUD
+    SYNC --> CLOUD
+    CLOUD --> ANALYTICS
+    
+    %% Layer 4 to Layer 5 connections
+    CLOUD --> ES
+    ANALYTICS --> CUOPT
+    ANALYTICS --> TRIAGE
+    
+    ES --> CUOPT
+    CUOPT --> ES
+    TRIAGE --> ES
+    
+    %% Styling
+    classDef device fill:#e8f4f8,stroke:#2196F3,stroke-width:3px
+    classDef network fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef gateway fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    classDef cloud fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    classDef emergency fill:#ffebee,stroke:#f44336,stroke-width:3px
+    
+    class DEVICE1,DEVICE2,DEVICE3,LLM1,LLM2,LLM3 device
+    class MESH,SAT,CELL,LORA network
+    class GATEWAY1,GATEWAY2,GATEWAY3,RELAY gateway
+    class CLOUD,API,SYNC,ANALYTICS cloud
+    class ES,CUOPT,TRIAGE emergency
+```
+
+
 <h2>🤝 Contributing</h2>
 
 <p>We welcome contributions to SafeGuardianAI! Whether you're fixing bugs, adding new features, or improving documentation, your help is appreciated. Please follow these steps to contribute:</p>
